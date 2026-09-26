@@ -141,7 +141,6 @@ class SimRecDataset(Dataset):
                                             "target_item_id": target_item_id,
                                             "target_item_ids": target_item_ids,
                                             "target_ids": target_item_ids,
-                                            "reference_review": reference_review,
                                             "reference_query": reference_query,
                                             "is_validate": validate,
                                         },

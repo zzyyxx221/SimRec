@@ -82,7 +82,6 @@ class SimRecUserInteraction(BaseInteraction):
         qid: str = "",
         user_id: str = "",
         target_item_id: str = "",
-        reference_review: str = "",
         reference_query: str = "",
         initial_user_utterance: str = "",
         is_validate: bool = False,
@@ -93,16 +92,15 @@ class SimRecUserInteraction(BaseInteraction):
         validation_mode = _as_bool(is_validate or kwargs.get("validate") or kwargs.get("validation"))
         evaluation_target_item_id = str(target_item_id or "").upper()
         evaluation_target_item_ids = _normalize_target_item_ids(kwargs.get("target_item_ids"), evaluation_target_item_id)
-        # Target IDs are evaluation/controller state, not user-simulator
-        # context.  The interaction layer still keeps them below for success
-        # and termination checks, while the simulator only sees the shopper
-        # need and the dialogue.
+        # Target IDs and reviews are evaluation/controller state, not
+        # user-simulator context. The simulator sees only the task query and
+        # visible dialogue; the controller retains target IDs below for
+        # success and termination checks.
         sample = {
             "qid": qid,
             "user_id": user_id,
             "target_item_id": "",
             "target_item_ids": [],
-            "reference_review": reference_review,
             "reference_query": reference_query,
         }
         session = self._simulator.start_episode(sample, initial_user_utterance=initial_user_utterance or None)

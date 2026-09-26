@@ -193,14 +193,12 @@ class SimRecToolAgentLoop(ToolAgentLoop):
             task = (
                 "Write the shopper's first message only. Use the reference query nearly verbatim when available, "
                 "without dropping concrete requirements.\n"
-                f"Reference query: {kwargs.get('reference_query') or 'N/A'}\n"
-                f"Reference review: {kwargs.get('reference_review') or 'N/A'}"
+                f"Reference query: {kwargs.get('reference_query') or 'N/A'}"
             )
         else:
             task = (
                 "Write the next shopper reply only.\n"
-                f"Private reference query: {kwargs.get('reference_query') or 'N/A'}\n"
-                f"Private reference review: {kwargs.get('reference_review') or 'N/A'}\n\n"
+                f"Private reference query: {kwargs.get('reference_query') or 'N/A'}\n\n"
                 f"Recent dialogue:\n{dialogue}\n\n"
                 f"Latest recommender message:\n{self._clean_text(assistant_text)}"
             )
@@ -212,11 +210,8 @@ class SimRecToolAgentLoop(ToolAgentLoop):
     def _fallback_user_utterance(self, agent_data) -> str:
         kwargs = agent_data.interaction_kwargs or {}
         query = self._clean_text(kwargs.get("reference_query", ""))
-        review = self._clean_text(kwargs.get("reference_review", ""))
         if query:
             return query if query.endswith((".", "!", "?")) else f"{query}."
-        if review:
-            return f"I'm looking for something like this: {review[:160].rstrip()}."
         return "I'm looking for a product that fits my needs."
 
     async def _append_user_turn(self, agent_data, user_text: str) -> None:

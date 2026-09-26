@@ -305,7 +305,6 @@ class SimRecDataset(Dataset):
                                                 "user_id": sample.get("user_id", ""),
                                                 "target_item_id": target_item_id,
                                                 "target_item_ids": target_item_ids,
-                                                "reference_review": reference_review,
                                                 "reference_query": reference_query,
                                                 "user_profile": user_profile,
                                                 "user_preference": user_preference,

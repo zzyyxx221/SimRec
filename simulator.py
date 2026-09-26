@@ -54,7 +54,6 @@ def mask_target_item_ids(value: Any, target_item_ids: list[str] | None) -> str:
 class UserSession:
     qid: str
     target_item_id: str
-    reference_review: str
     reference_query: str
     target_item_ids: list[str] | None = None
     initial_user_utterance: str = ""
@@ -64,14 +63,10 @@ class UserSession:
     done: bool = False
 
 
-def _build_fallback_initial_user_utterance(reference_query: str, reference_review: str) -> str:
+def _build_fallback_initial_user_utterance(reference_query: str) -> str:
     query = clean_text(reference_query)
-    review = clean_text(reference_review)
     if query:
         return query if query.endswith((".", "!", "?")) else f"{query}."
-    if review:
-        snippet = review[:160].rstrip()
-        return f"I'm looking for something like this: {snippet}."
     return "I'm looking for a product that fits my needs."
 
 
@@ -101,12 +96,10 @@ class HeuristicUserSimulator:
     def start_episode(self, sample: dict[str, Any], initial_user_utterance: str | None = None) -> UserSession:
         opener = clean_text(initial_user_utterance) or _build_fallback_initial_user_utterance(
             sample.get("reference_query", ""),
-            sample.get("reference_review", ""),
         )
         return UserSession(
             qid=str(sample.get("qid", "0")),
             target_item_id=str(sample.get("target_item_id", "")).upper(),
-            reference_review=clean_text(sample.get("reference_review", "")),
             reference_query=clean_text(sample.get("reference_query", "")),
             target_item_ids=_normalize_target_item_ids(sample),
             initial_user_utterance=opener,
@@ -184,7 +177,6 @@ class LLMUserSimulator:
         return UserSession(
             qid=str(sample.get("qid", "0")),
             target_item_id=str(sample.get("target_item_id", "")).upper(),
-            reference_review=clean_text(sample.get("reference_review", "")),
             reference_query=clean_text(sample.get("reference_query", "")),
             target_item_ids=_normalize_target_item_ids(sample),
         )
@@ -324,8 +316,7 @@ class LLMUserSimulator:
             {
                 "role": "user",
                 "content": (
-                    f"Reference query: {session.reference_query or 'N/A'}\n"
-                    f"Reference review: {session.reference_review or 'N/A'}"
+                    f"Reference query: {session.reference_query or 'N/A'}"
                 ),
             },
         ]
@@ -334,7 +325,7 @@ class LLMUserSimulator:
         except Exception as exc:
             if not self.fallback_on_error:
                 raise
-            user_reply = _build_fallback_initial_user_utterance(session.reference_query, session.reference_review)
+            user_reply = _build_fallback_initial_user_utterance(session.reference_query)
             print(
                 f"user simulator failed to generate initial utterance; using fallback: {exc}",
                 flush=True,
@@ -383,8 +374,7 @@ class LLMUserSimulator:
                 "role": "user",
                 "content": (
                     f"Your shopping need is based on:\n"
-                    f"- Reference query: {session.reference_query or 'N/A'}\n"
-                    f"- Reference review: {session.reference_review or 'N/A'}\n\n"
+                    f"- Reference query: {session.reference_query or 'N/A'}\n\n"
                     f"{recommendation_context}"
                     f"Recent dialogue:\n{dialogue or []}\n\n"
                     f"Latest assistant message:\n{clean_text(assistant_text)}\n\n"
