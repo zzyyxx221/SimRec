@@ -1,0 +1,12 @@
+interaction:
+  - name: simrec_user
+    class_name: SimRec.interactions.user_interaction.SimRecUserInteraction
+    config:
+      seed: 42
+      base_url: null
+      model: null
+      api_key: null
+      timeout: 60
+      temperature: 0.2
+      max_tokens: 220
+      enable_thinking: false

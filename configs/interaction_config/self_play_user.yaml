@@ -1,0 +1,5 @@
+interaction:
+  - name: simrec_self_play_user
+    class_name: SimRec.interactions.self_play_user_interaction.SelfPlayUserInteraction
+    config:
+      self_play: true

@@ -1,0 +1,25 @@
+# Credentials and local configuration
+.env
+.env.*
+*.key
+*.pem
+configs/*.env
+!configs/*.env.example
+
+# Input data, model indexes, and generated artifacts
+data/
+checkpoints/
+logs/
+outputs/
+wandb/
+ray_results/
+verl_step_records/
+eval_results/
+analysis/
+
+# Python and editor artifacts
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.DS_Store

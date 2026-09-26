@@ -1,0 +1,7 @@
+tools:
+  - class_name: SimRec.self_play.tools.SimRecSearchTool
+    config: {type: native}
+  - class_name: SimRec.self_play.tools.SimRecItemDetailsTool
+    config: {type: native}
+  - class_name: SimRec.self_play.tools.SimRecUserPreferenceTool
+    config: {type: native}
